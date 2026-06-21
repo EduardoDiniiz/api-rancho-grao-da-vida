@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rancho_local
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+api:
+  security:
+    jwt:
+      secret: cmFuY2hvLWdlc3Rhby1sb2NhbC1kZXYtc2VjcmV0LWtleS1taW4tMjU2LWJpdHMtbG9uZw==
+      expiration: 86400000
+
+logging:
+  level:
+    com.rancho.api: DEBUG
+    org.hibernate.SQL: DEBUG

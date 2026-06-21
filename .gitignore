@@ -1,0 +1,6 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.iml
+.idea/
+.DS_Store
+dev-db.ps1
