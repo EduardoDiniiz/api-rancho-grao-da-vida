@@ -26,7 +26,7 @@ public class AnimalServicoService {
     @Transactional
     public AnimalServicoResponseDTO create(AnimalServicoRequestDTO dto) {
         Animal animal = animalService.getAnimal(dto.animalId());
-        Servico servico = servicoService.getServico(dto.servicoId());
+        Servico servico = servicoService.getOrCreateByNome(dto.servicoNome(), dto.valor());
 
         AnimalServico as = AnimalServico.builder()
                 .animal(animal)
@@ -58,8 +58,8 @@ public class AnimalServicoService {
         as.setValor(dto.valor());
         as.setRecorrenciaDias(dto.recorrenciaDias());
         as.setDescricao(dto.descricao());
-        if (dto.servicoId() != null && !dto.servicoId().equals(as.getServico().getId())) {
-            as.setServico(servicoService.getServico(dto.servicoId()));
+        if (dto.servicoNome() != null && !dto.servicoNome().isBlank()) {
+            as.setServico(servicoService.getOrCreateByNome(dto.servicoNome(), dto.valor()));
         }
         return toDTO(animalServicoRepository.save(as));
     }

@@ -9,8 +9,9 @@ public record AnimalServicoRequestDTO(
         @NotNull(message = "Animal e obrigatorio")
         Long animalId,
 
-        @NotNull(message = "Servico e obrigatorio")
-        Long servicoId,
+        @NotBlank(message = "Servico e obrigatorio")
+        @Size(max = 255, message = "Servico deve ter no maximo 255 caracteres")
+        String servicoNome,
 
         @NotNull(message = "Valor e obrigatorio")
         @DecimalMin(value = "0.0", inclusive = false, message = "Valor deve ser maior que zero")

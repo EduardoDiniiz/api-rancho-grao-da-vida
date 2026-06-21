@@ -52,4 +52,19 @@ public class ServicoService {
         return servicoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Servico", id));
     }
+
+    /**
+     * Busca um servico pelo nome (ignora maiusculas/minusculas); se nao existir,
+     * cria um novo no catalogo usando o valor informado como valor padrao.
+     */
+    @Transactional
+    public Servico getOrCreateByNome(String nome, java.math.BigDecimal valorPadrao) {
+        String nomeLimpo = nome.trim();
+        return servicoRepository.findFirstByNomeIgnoreCase(nomeLimpo)
+                .orElseGet(() -> servicoRepository.save(Servico.builder()
+                        .nome(nomeLimpo)
+                        .valorPadrao(valorPadrao)
+                        .active(true)
+                        .build()));
+    }
 }
