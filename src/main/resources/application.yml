@@ -25,3 +25,11 @@ api:
     jwt:
       token-prefix: "Bearer "
       header: "Authorization"
+
+# Integracao com interruptores WiFi via Tuya Cloud (menu Dispositivos).
+# Preencha via variaveis de ambiente. Enquanto enabled=false o menu mostra apenas o aviso de configuracao.
+tuya:
+  enabled: ${TUYA_ENABLED:false}
+  endpoint: ${TUYA_ENDPOINT:https://openapi.tuyaus.com}
+  access-id: ${TUYA_ACCESS_ID:}
+  access-secret: ${TUYA_ACCESS_SECRET:}

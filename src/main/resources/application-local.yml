@@ -20,6 +20,11 @@ api:
       secret: cmFuY2hvLWdlc3Rhby1sb2NhbC1kZXYtc2VjcmV0LWtleS1taW4tMjU2LWJpdHMtbG9uZw==
       expiration: 86400000
 
+# Tuya (interruptores WiFi): as chaves NAO ficam mais no codigo.
+# Para testar localmente, exporte as variaveis antes de subir a API:
+#   TUYA_ENABLED=true TUYA_ACCESS_ID=... TUYA_ACCESS_SECRET=... (endpoint default = openapi.tuyaus.com)
+# O application.yml base ja le essas variaveis (tuya.enabled/endpoint/access-id/access-secret).
+
 logging:
   level:
     com.rancho.api: DEBUG
