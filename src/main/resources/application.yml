@@ -33,3 +33,12 @@ tuya:
   endpoint: ${TUYA_ENDPOINT:https://openapi.tuyaus.com}
   access-id: ${TUYA_ACCESS_ID:}
   access-secret: ${TUYA_ACCESS_SECRET:}
+
+# Integracao PIX via Asaas (menu Faturamento). Preencha via variaveis de ambiente.
+# Enquanto enabled=false o sistema opera em modo mock (PIX simulado + botao "Simular pagamento").
+# Sandbox: ASAAS_BASE_URL=https://api-sandbox.asaas.com/v3 | Producao: https://api.asaas.com/v3
+asaas:
+  enabled: ${ASAAS_ENABLED:false}
+  base-url: ${ASAAS_BASE_URL:https://api-sandbox.asaas.com/v3}
+  api-key: ${ASAAS_API_KEY:}
+  webhook-token: ${ASAAS_WEBHOOK_TOKEN:}

@@ -10,6 +10,8 @@ public record UserResponseDTO(
         String email,
         String login,
         Role role,
+        Long clienteId,
+        String clienteNome,
         Boolean active,
         LocalDateTime createdAt
 ) {}

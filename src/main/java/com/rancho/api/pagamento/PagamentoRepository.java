@@ -9,19 +9,26 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
 
+    Optional<Pagamento> findByAsaasPaymentId(String asaasPaymentId);
+
     @Query("""
             SELECT p FROM Pagamento p
+              LEFT JOIN p.animal a
+              LEFT JOIN a.cliente c
             WHERE (:status IS NULL OR p.status = :status)
-              AND (:animalId IS NULL OR p.animal.id = :animalId)
+              AND (:animalId IS NULL OR a.id = :animalId)
+              AND (:clienteId IS NULL OR c.id = :clienteId)
               AND (:inicio IS NULL OR p.vencimento >= :inicio)
               AND (:fim IS NULL OR p.vencimento <= :fim)
             ORDER BY p.vencimento ASC
             """)
     Page<Pagamento> search(@Param("status") PagamentoStatus status,
                           @Param("animalId") Long animalId,
+                          @Param("clienteId") Long clienteId,
                           @Param("inicio") LocalDate inicio,
                           @Param("fim") LocalDate fim,
                           Pageable pageable);

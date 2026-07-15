@@ -3,4 +3,4 @@ target/
 *.iml
 .idea/
 .DS_Store
-dev-db.ps1
+dev-db.ps

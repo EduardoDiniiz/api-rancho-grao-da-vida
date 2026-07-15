@@ -1,5 +1,6 @@
 package com.rancho.api.user;
 
+import com.rancho.api.cliente.Cliente;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,6 +44,14 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 20)
     private Role role;
 
+    /**
+     * Cliente vinculado. Obrigatorio apenas para usuarios com perfil CLIENTE;
+     * nulo para ADMIN e OPERADOR.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+
     @Column(nullable = false)
     private Boolean active;
 
@@ -82,5 +91,13 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return active;
+    }
+
+    /**
+     * Id do cliente vinculado sem forcar a inicializacao do proxy lazy
+     * (o identificador ja e o FK conhecido). Retorna null para ADMIN/OPERADOR.
+     */
+    public Long getClienteId() {
+        return cliente != null ? cliente.getId() : null;
     }
 }

@@ -22,5 +22,8 @@ public record UserCreateDTO(
         String password,
 
         @NotNull(message = "Perfil e obrigatorio")
-        Role role
+        Role role,
+
+        // Obrigatorio quando role = CLIENTE (validado no service)
+        Long clienteId
 ) {}

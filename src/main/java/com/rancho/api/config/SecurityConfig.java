@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -40,7 +41,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/auth/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
-                        .anyRequest().authenticated())
+                        // Webhook do Asaas: publico (validado por token no proprio handler)
+                        .requestMatchers("/v1/webhooks/**").permitAll()
+                        // Perfil CLIENTE: acesso somente-leitura a seus animais e faturamento.
+                        // O escopo por cliente (ver apenas o que e seu) e aplicado nos controllers.
+                        .requestMatchers("/v1/users/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/v1/animais/**").hasAnyRole("ADMIN", "OPERADOR", "CLIENTE")
+                        .requestMatchers(HttpMethod.GET, "/v1/pagamentos/**").hasAnyRole("ADMIN", "OPERADOR", "CLIENTE")
+                        // PIX das proprias cobrancas: CLIENTE pode gerar o QR (a baixa vem do webhook).
+                        // A simulacao (modo mock) fica restrita a ADMIN/OPERADOR, nunca ao proprio cliente.
+                        .requestMatchers(HttpMethod.POST, "/v1/pagamentos/*/pix/simular").hasAnyRole("ADMIN", "OPERADOR")
+                        .requestMatchers(HttpMethod.POST, "/v1/pagamentos/*/pix").hasAnyRole("ADMIN", "OPERADOR", "CLIENTE")
+                        // Qualquer outra rota (incluindo escritas em animais/pagamentos) exige ADMIN ou OPERADOR
+                        .anyRequest().hasAnyRole("ADMIN", "OPERADOR"))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

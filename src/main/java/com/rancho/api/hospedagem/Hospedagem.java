@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -41,6 +42,14 @@ public class Hospedagem {
 
     @Column(name = "data_saida")
     private LocalDate dataSaida;
+
+    /** Valor da diaria/mensalidade cobrado a cada mes de hospedagem. */
+    @Column(name = "valor_mensal", precision = 12, scale = 2)
+    private BigDecimal valorMensal;
+
+    /** Data de vencimento da proxima cobranca mensal (nula se sem cobranca). */
+    @Column(name = "proximo_vencimento")
+    private LocalDate proximoVencimento;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

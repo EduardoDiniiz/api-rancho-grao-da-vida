@@ -2,6 +2,7 @@ package com.rancho.api.pagamento;
 
 import com.rancho.api.animal.Animal;
 import com.rancho.api.animalservico.AnimalServico;
+import com.rancho.api.hospedagem.Hospedagem;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,10 @@ public class Pagamento {
     @JoinColumn(name = "animal_id")
     private Animal animal;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospedagem_id")
+    private Hospedagem hospedagem;
+
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal valor;
 
@@ -53,6 +58,14 @@ public class Pagamento {
     @Column(nullable = false, length = 20)
     @Builder.Default
     private PagamentoStatus status = PagamentoStatus.PENDENTE;
+
+    /** Id da cobranca correspondente no Asaas (integracao PIX). */
+    @Column(name = "asaas_payment_id", length = 40)
+    private String asaasPaymentId;
+
+    /** Copia-e-cola (payload EMV) do PIX gerado para esta cobranca. */
+    @Column(name = "pix_payload", columnDefinition = "TEXT")
+    private String pixPayload;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

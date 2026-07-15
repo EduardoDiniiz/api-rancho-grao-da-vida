@@ -1,5 +1,6 @@
 package com.rancho.api.user;
 
+import com.rancho.api.cliente.ClienteService;
 import com.rancho.api.common.exception.BusinessException;
 import com.rancho.api.common.exception.ResourceNotFoundException;
 import com.rancho.api.user.dto.UserCreateDTO;
@@ -19,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final ClienteService clienteService;
 
     @Transactional
     public UserResponseDTO create(UserCreateDTO dto) {
@@ -31,6 +33,7 @@ public class UserService {
 
         User user = userMapper.toEntity(dto);
         user.setPassword(passwordEncoder.encode(dto.password()));
+        aplicarCliente(user, dto.clienteId());
 
         return userMapper.toResponseDTO(userRepository.save(user));
     }
@@ -58,7 +61,25 @@ public class UserService {
         }
 
         userMapper.updateEntityFromDTO(dto, user);
+        aplicarCliente(user, dto.clienteId());
         return userMapper.toResponseDTO(userRepository.save(user));
+    }
+
+    /**
+     * Aplica o vinculo com o cliente de acordo com o perfil:
+     * CLIENTE exige um cliente valido; demais perfis nunca ficam vinculados.
+     */
+    private void aplicarCliente(User user, Long clienteId) {
+        if (user.getRole() == Role.CLIENTE) {
+            if (clienteId != null) {
+                user.setCliente(clienteService.getCliente(clienteId));
+            }
+            if (user.getCliente() == null) {
+                throw new BusinessException("Cliente e obrigatorio para o perfil CLIENTE");
+            }
+        } else {
+            user.setCliente(null);
+        }
     }
 
     @Transactional

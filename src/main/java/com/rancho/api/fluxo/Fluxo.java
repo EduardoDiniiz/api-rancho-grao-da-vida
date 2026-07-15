@@ -1,4 +1,4 @@
-package com.rancho.api.cliente;
+package com.rancho.api.fluxo;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,15 +7,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+/** Protocolo de tratamento modelado como grafo (template, reutilizavel por animal). */
 @Entity
-@Table(name = "clientes")
+@Table(name = "fluxos")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(of = {"id"})
-public class Cliente {
+public class Fluxo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,28 +25,12 @@ public class Cliente {
     @Column(nullable = false)
     private String nome;
 
-    @Column(name = "cpf_cnpj", length = 20)
-    private String cpfCnpj;
-
-    @Column(length = 20)
-    private String telefone;
-
-    @Column
-    private String email;
-
     @Column(columnDefinition = "TEXT")
-    private String endereco;
-
-    @Column(columnDefinition = "TEXT")
-    private String observacoes;
-
-    /** Id do cliente correspondente no Asaas (integracao PIX), criado sob demanda. */
-    @Column(name = "asaas_customer_id", length = 40)
-    private String asaasCustomerId;
+    private String descricao;
 
     @Column(nullable = false)
     @Builder.Default
-    private Boolean active = true;
+    private boolean active = true;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

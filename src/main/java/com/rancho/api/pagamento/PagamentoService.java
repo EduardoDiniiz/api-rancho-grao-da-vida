@@ -7,6 +7,9 @@ import com.rancho.api.animalservico.AnimalServicoRepository;
 import com.rancho.api.animalservico.AnimalServicoStatus;
 import com.rancho.api.common.exception.BusinessException;
 import com.rancho.api.common.exception.ResourceNotFoundException;
+import com.rancho.api.hospedagem.Hospedagem;
+import com.rancho.api.hospedagem.HospedagemRepository;
+import com.rancho.api.hospedagem.HospedagemStatus;
 import com.rancho.api.pagamento.dto.CobrancaAvulsaDTO;
 import com.rancho.api.pagamento.dto.PagamentoResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class PagamentoService {
     private final PagamentoRepository pagamentoRepository;
     private final AnimalServicoRepository animalServicoRepository;
     private final AnimalRepository animalRepository;
+    private final HospedagemRepository hospedagemRepository;
 
     /**
      * Gera uma cobranca pendente para o servico contratado no proximo vencimento.
@@ -37,6 +41,23 @@ public class PagamentoService {
                 .descricao(as.getServico().getNome())
                 .valor(as.getValor())
                 .vencimento(as.getProximoVencimento())
+                .status(PagamentoStatus.PENDENTE)
+                .build();
+        return pagamentoRepository.save(pagamento);
+    }
+
+    /**
+     * Gera a cobranca mensal de uma hospedagem, com vencimento no proximo
+     * vencimento previsto. Usada no registro de entrada e na recorrencia mensal.
+     */
+    @Transactional
+    public Pagamento gerarCobrancaHospedagem(Hospedagem h) {
+        Pagamento pagamento = Pagamento.builder()
+                .hospedagem(h)
+                .animal(h.getAnimal())
+                .descricao("Hospedagem - Baia " + h.getBaia().getIdentificacao())
+                .valor(h.getValorMensal())
+                .vencimento(h.getProximoVencimento())
                 .status(PagamentoStatus.PENDENTE)
                 .build();
         return pagamentoRepository.save(pagamento);
@@ -83,6 +104,15 @@ public class PagamentoService {
             gerarCobranca(as);
         }
 
+        // Recorrencia mensal da hospedagem enquanto o animal continuar hospedado
+        Hospedagem hosp = pagamento.getHospedagem();
+        if (hosp != null && hosp.getStatus() == HospedagemStatus.ATIVO && hosp.getValorMensal() != null) {
+            LocalDate base = pagamento.getVencimento();
+            hosp.setProximoVencimento(base.plusMonths(1));
+            hospedagemRepository.save(hosp);
+            gerarCobrancaHospedagem(hosp);
+        }
+
         return toDTO(salvo);
     }
 
@@ -106,9 +136,9 @@ public class PagamentoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PagamentoResponseDTO> findAll(PagamentoStatus status, Long animalId,
+    public Page<PagamentoResponseDTO> findAll(PagamentoStatus status, Long animalId, Long clienteId,
                                               LocalDate inicio, LocalDate fim, Pageable pageable) {
-        return pagamentoRepository.search(status, animalId, inicio, fim, pageable).map(this::toDTO);
+        return pagamentoRepository.search(status, animalId, clienteId, inicio, fim, pageable).map(this::toDTO);
     }
 
     /**

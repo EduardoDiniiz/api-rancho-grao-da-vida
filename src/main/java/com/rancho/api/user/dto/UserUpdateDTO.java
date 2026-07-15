@@ -13,5 +13,7 @@ public record UserUpdateDTO(
 
         Role role,
 
+        Long clienteId,
+
         Boolean active
 ) {}
