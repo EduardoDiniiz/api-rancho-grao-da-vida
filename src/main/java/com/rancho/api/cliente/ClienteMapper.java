@@ -14,7 +14,7 @@ public interface ClienteMapper {
     Cliente toEntity(ClienteRequestDTO dto);
 
     @Mapping(target = "totalAnimais", source = "totalAnimais")
-    ClienteResponseDTO toResponseDTO(Cliente cliente, Long totalAnimais);
+    ClienteResponseDTO toResponseDTO(Cliente cliente, Long totalAnimais, Long usuarioId, String usuarioLogin);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)

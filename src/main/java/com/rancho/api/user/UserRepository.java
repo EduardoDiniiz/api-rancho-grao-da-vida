@@ -25,6 +25,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByClienteId(Long clienteId);
+
+    Optional<User> findFirstByClienteIdOrderByIdAsc(Long clienteId);
+
     @Query("""
             SELECT u FROM User u
             WHERE (:search IS NULL

@@ -1,6 +1,8 @@
 package com.rancho.api.user;
 
 import com.rancho.api.user.dto.ChangePasswordDTO;
+import com.rancho.api.user.dto.GeneratedCredentialsDTO;
+import com.rancho.api.user.dto.ResetPasswordDTO;
 import com.rancho.api.user.dto.UserCreateDTO;
 import com.rancho.api.user.dto.UserResponseDTO;
 import com.rancho.api.user.dto.UserUpdateDTO;
@@ -65,6 +67,29 @@ public class UserController {
         }
         userService.changePassword(id, dto.currentPassword(), dto.newPassword());
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/reset-password")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> resetPassword(
+            @PathVariable Long id,
+            @Valid @RequestBody ResetPasswordDTO dto) {
+        userService.resetPassword(id, dto.newPassword());
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Gera um usuario (perfil CLIENTE) para o cliente informado e devolve as credenciais. */
+    @PostMapping("/from-cliente/{clienteId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<GeneratedCredentialsDTO> gerarParaCliente(@PathVariable Long clienteId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.gerarParaCliente(clienteId));
+    }
+
+    /** Redefine a senha do usuario do cliente e devolve as novas credenciais. */
+    @PostMapping("/from-cliente/{clienteId}/reset-password")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<GeneratedCredentialsDTO> redefinirCredenciaisCliente(@PathVariable Long clienteId) {
+        return ResponseEntity.ok(userService.redefinirCredenciaisCliente(clienteId));
     }
 
     @DeleteMapping("/{id}")

@@ -5,6 +5,8 @@ import com.rancho.api.cliente.dto.ClienteRequestDTO;
 import com.rancho.api.cliente.dto.ClienteResponseDTO;
 import com.rancho.api.common.exception.BusinessException;
 import com.rancho.api.common.exception.ResourceNotFoundException;
+import com.rancho.api.user.User;
+import com.rancho.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
     private final ClienteMapper clienteMapper;
     private final AnimalRepository animalRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public ClienteResponseDTO create(ClienteRequestDTO dto) {
@@ -77,6 +80,9 @@ public class ClienteService {
 
     private ClienteResponseDTO toDTO(Cliente cliente) {
         long total = animalRepository.countByClienteId(cliente.getId());
-        return clienteMapper.toResponseDTO(cliente, total);
+        User usuario = userRepository.findFirstByClienteIdOrderByIdAsc(cliente.getId()).orElse(null);
+        return clienteMapper.toResponseDTO(cliente, total,
+                usuario != null ? usuario.getId() : null,
+                usuario != null ? usuario.getLogin() : null);
     }
 }

@@ -12,5 +12,7 @@ public record ClienteResponseDTO(
         String observacoes,
         Boolean active,
         Long totalAnimais,
+        Long usuarioId,
+        String usuarioLogin,
         LocalDateTime createdAt
 ) {}
