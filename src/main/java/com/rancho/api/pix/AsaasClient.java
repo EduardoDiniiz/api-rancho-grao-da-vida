@@ -28,6 +28,16 @@ public class AsaasClient {
 
     private final RestClient restClient = RestClient.create();
 
+    @jakarta.annotation.PostConstruct
+    void logModo() {
+        if (isConfigured()) {
+            log.info("PIX/Asaas em modo REAL (baseUrl={})", props.getBaseUrl());
+        } else {
+            log.warn("PIX/Asaas em modo MOCK (enabled={}, apiKey {}). Cobrancas PIX sao simuladas.",
+                    props.isEnabled(), StringUtils.hasText(props.getApiKey()) ? "presente" : "ausente");
+        }
+    }
+
     public boolean isConfigured() {
         return props.isEnabled() && StringUtils.hasText(props.getApiKey());
     }
