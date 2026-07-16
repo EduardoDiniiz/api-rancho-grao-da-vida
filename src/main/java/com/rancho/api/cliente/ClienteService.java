@@ -80,7 +80,7 @@ public class ClienteService {
 
     private ClienteResponseDTO toDTO(Cliente cliente) {
         long total = animalRepository.countByClienteId(cliente.getId());
-        User usuario = userRepository.findFirstByClienteIdOrderByIdAsc(cliente.getId()).orElse(null);
+        User usuario = userRepository.findFirstByCliente_IdOrderByIdAsc(cliente.getId()).orElse(null);
         return clienteMapper.toResponseDTO(cliente, total,
                 usuario != null ? usuario.getId() : null,
                 usuario != null ? usuario.getLogin() : null);

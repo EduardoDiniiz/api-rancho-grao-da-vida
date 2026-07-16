@@ -107,7 +107,7 @@ public class UserService {
     @Transactional
     public GeneratedCredentialsDTO gerarParaCliente(Long clienteId) {
         Cliente cliente = clienteService.getCliente(clienteId);
-        if (userRepository.existsByClienteId(clienteId)) {
+        if (userRepository.existsByCliente_Id(clienteId)) {
             throw new BusinessException("Cliente ja possui usuario");
         }
 
@@ -135,7 +135,7 @@ public class UserService {
      */
     @Transactional
     public GeneratedCredentialsDTO redefinirCredenciaisCliente(Long clienteId) {
-        User user = userRepository.findFirstByClienteIdOrderByIdAsc(clienteId)
+        User user = userRepository.findFirstByCliente_IdOrderByIdAsc(clienteId)
                 .orElseThrow(() -> new BusinessException("Cliente nao possui usuario"));
 
         String rawPassword = gerarSenha();
