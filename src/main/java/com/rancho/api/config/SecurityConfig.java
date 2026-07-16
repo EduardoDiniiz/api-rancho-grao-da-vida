@@ -52,6 +52,8 @@ public class SecurityConfig {
                         // A simulacao (modo mock) fica restrita a ADMIN/OPERADOR, nunca ao proprio cliente.
                         .requestMatchers(HttpMethod.POST, "/v1/pagamentos/*/pix/simular").hasAnyRole("ADMIN", "OPERADOR")
                         .requestMatchers(HttpMethod.POST, "/v1/pagamentos/*/pix").hasAnyRole("ADMIN", "OPERADOR", "CLIENTE")
+                        // Pagamento com cartao da propria cobranca (escopo validado no service).
+                        .requestMatchers(HttpMethod.POST, "/v1/pagamentos/*/cartao").hasAnyRole("ADMIN", "OPERADOR", "CLIENTE")
                         // Qualquer outra rota (incluindo escritas em animais/pagamentos) exige ADMIN ou OPERADOR
                         .anyRequest().hasAnyRole("ADMIN", "OPERADOR"))
                 .authenticationProvider(authenticationProvider)

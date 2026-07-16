@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 /**
  * Configuracao da integracao PIX via Asaas. As credenciais ficam apenas no
  * servidor (variaveis de ambiente). Enquanto {@code enabled=false} ou sem
@@ -28,4 +30,10 @@ public class AsaasProperties {
 
     /** Token esperado no header asaas-access-token do webhook (defina o mesmo no painel). */
     private String webhookToken;
+
+    /** Multa por atraso, em % (aplicada uma vez apos o vencimento). */
+    private BigDecimal multaPercent = BigDecimal.ONE;
+
+    /** Juros de mora, em % ao mes. */
+    private BigDecimal jurosPercent = BigDecimal.ONE;
 }

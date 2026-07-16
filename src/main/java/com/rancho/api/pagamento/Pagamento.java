@@ -67,6 +67,11 @@ public class Pagamento {
     @Column(name = "pix_payload", columnDefinition = "TEXT")
     private String pixPayload;
 
+    /** Metodo escolhido na cobranca online (PIX/CARTAO); define a taxa repassada. */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "cobranca_metodo", length = 20)
+    private com.rancho.api.pix.MetodoCobranca cobrancaMetodo;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -7,12 +7,17 @@ import java.math.BigDecimal;
 /**
  * Dados do PIX de uma cobranca para exibicao na tela de faturamento.
  *
+ * @param valorBase    valor original da cobranca (sem a taxa)
+ * @param taxa         taxa do Asaas repassada ao cliente (0 no modo mock)
+ * @param valor        valor total pago pelo cliente (base + taxa)
  * @param encodedImage QR Code em PNG base64 (presente no modo real do Asaas; nulo no mock)
  * @param payload      copia-e-cola do PIX
  * @param mock         true quando gerado em modo simulado (sem integracao Asaas ativa)
  */
 public record PixResponseDTO(
         Long pagamentoId,
+        BigDecimal valorBase,
+        BigDecimal taxa,
         BigDecimal valor,
         PagamentoStatus status,
         String encodedImage,

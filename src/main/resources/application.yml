@@ -42,3 +42,7 @@ asaas:
   base-url: ${ASAAS_BASE_URL:https://api-sandbox.asaas.com/v3}
   api-key: ${ASAAS_API_KEY:}
   webhook-token: ${ASAAS_WEBHOOK_TOKEN:}
+  # Multa (uma vez apos o vencimento) e juros de mora (ao mes), em %. As taxas de
+  # PIX/cartao repassadas ao cliente NAO ficam aqui: vem do simulador do Asaas.
+  multa-percent: ${ASAAS_MULTA:1}
+  juros-percent: ${ASAAS_JUROS:1}
